@@ -53,9 +53,12 @@ const char **debSrcRecordParser::Binaries()
    char* bin = Buffer;
    do {
       char* binStartNext = strchrnul(bin, ',');
-      char* binEnd = binStartNext - 1;
-      for (; isspace(*binEnd) != 0; --binEnd)
-	 binEnd = '\0';
+      // Found a comma, clean up any space before it
+      if (binStartNext > Buffer) {
+	 char* binEnd = binStartNext - 1;
+	 for (; binEnd > Buffer && isspace(*binEnd) != 0; --binEnd)
+	    *binEnd = 0;
+      }
       StaticBinList.push_back(bin);
       if (*binStartNext != ',')
 	 break;
